@@ -7,8 +7,8 @@ default_port = '22'
 default_ip = default_hostname + ":" + default_port
 default_source = 'https://github.com/abc/abc.git' 
 # default_source = 'https://github.com/django-extensions/django-extensions.git'
-default_username = 'aaa'
-default_password = 'aaa'
+default_username = 'pi'
+default_password = 'raspberry'
 
 COMMAND_NOT_FOUND = 'command not found'
 WARNING_PIP_NOT_INSTALLED = 'Error: command "pip" does not exist on target system. Abort. '
@@ -68,7 +68,7 @@ if __name__ == "__main__":
 
 	print "> Connect to " + username + ":" + password + "@" + hostname + ":" + str(port)
 	# commands = 'source ~/Programming/virtualenv/env1/bin/activate\nyes | pip install git+' + source
-	commands = 'yes | pip install git+' + source
+	commands = 'yes | sudo pip install git+' + source
 	# print commands
 	sshConnection = startSshConnection()
 	if sshConnection is not None:
