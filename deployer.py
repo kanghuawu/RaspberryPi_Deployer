@@ -50,6 +50,27 @@ def isCommandInstalled(ssh, command):
 	else:
 		return True
 
+def deployApp(ssh, source):
+	repo = (source.split('/')[-1])[:-4]
+
+	command = (
+      'mkdir /home/pi/apps/{0} && git clone {1} /home/pi/apps/{2}'
+      ' && wget https://raw.githubusercontent.com/kanghuawu/cmpe273-team-project/master/sample_apps/flask-video-streaming/Dockerfile -P /home/pi/apps/{3}'
+      ' && docker build -t {4}:latest /home/pi/apps/{5}'
+      ' && docker run -d -p 5000:5000 {6}'
+	).format(repo, source, repo, repo, repo, repo, repo)
+	executeAndOutput(sshConnection, command)	
+  '''
+	command1 = 'mkdir /home/pi/apps/' + repo + ' && git clone ' + source + ' /home/pi/apps/' + repo
+	command2 = 'wget https://raw.githubusercontent.com/kanghuawu/cmpe273-team-project/master/sample_apps/flask-video-streaming/Dockerfile -P /home/pi/apps/' + repo
+	command3 = 'docker build -t ' + repo + ':latest /home/pi/apps/' + repo
+	command4 = 'docker run -d -p 5000:5000 ' + repo
+	executeAndOutput(sshConnection, command1)
+	executeAndOutput(sshConnection, command2)
+	executeAndOutput(sshConnection, command3)
+	executeAndOutput(sshConnection, command4)
+	'''
+
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='deployer.py: Input target machine ip and package git source to deploy app. ex: "python deployer.py --ip 192.168.2.181:22 --source https://github.com/django-extensions/django-extensions.git --username YOUR_USERNAME --password YOUR_PASSWORD". Or just "python deployer.py" using default values.')
 	parser.add_argument("--ip", help='Default value: ' + default_ip, default=default_ip)
@@ -76,7 +97,8 @@ if __name__ == "__main__":
 		isPipInstalled = isCommandInstalled(sshConnection, 'pip --version')
 		if isPythonInstalled and isPipInstalled:
 			print "> Start to deploy app from: " + source
-			executeAndOutput(sshConnection, commands)
+			#executeAndOutput(sshConnection, commands)
+			deployApp(sshConnection,source)
 			closeSshConnection(sshConnection)
 		elif not isPythonInstalled:
 			print WARNING_PYTHON_NOT_INSTALLED
