@@ -50,7 +50,7 @@ def isCommandInstalled(ssh, command):
 	else:
 		return True
 
-def deployApp(ssh, source):
+def deployApp(sshConn, source):
 	repo = (source.split('/')[-1])[:-4]
 
 	command = (
@@ -59,8 +59,8 @@ def deployApp(ssh, source):
       ' && docker build -t {4}:latest /home/pi/apps/{5}'
       ' && docker run -d -p 5000:5000 {6}'
 	).format(repo, source, repo, repo, repo, repo, repo)
-	executeAndOutput(sshConnection, command)	
-  '''
+	executeAndOutput(sshConn, command)	
+	'''
 	command1 = 'mkdir /home/pi/apps/' + repo + ' && git clone ' + source + ' /home/pi/apps/' + repo
 	command2 = 'wget https://raw.githubusercontent.com/kanghuawu/cmpe273-team-project/master/sample_apps/flask-video-streaming/Dockerfile -P /home/pi/apps/' + repo
 	command3 = 'docker build -t ' + repo + ':latest /home/pi/apps/' + repo
@@ -70,6 +70,19 @@ def deployApp(ssh, source):
 	executeAndOutput(sshConnection, command3)
 	executeAndOutput(sshConnection, command4)
 	'''
+
+def generateDockerfile(sshConn, source):
+	repo = (source.split('/')[-1])[:-4]
+	path = ('/home/pi/apps/{0}/Dockerfile').format(repo)
+	command = (
+      "echo $'FROM resin/rpi-raspbian:latest\n"
+      "COPY . /app\n"
+      "WORKDIR /app\n"
+      "RUN sudo apt-get update && sudo apt-get install python-pip && pip install -r requirements.txt\n"
+      "ENTRYPOINT [\"python\", \"app.py\"]' > {0}"
+  ).format(path)
+	executeAndOutput(sshConn,command)
+
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='deployer.py: Input target machine ip and package git source to deploy app. ex: "python deployer.py --ip 192.168.2.181:22 --source https://github.com/django-extensions/django-extensions.git --username YOUR_USERNAME --password YOUR_PASSWORD". Or just "python deployer.py" using default values.')
@@ -97,8 +110,9 @@ if __name__ == "__main__":
 		isPipInstalled = isCommandInstalled(sshConnection, 'pip --version')
 		if isPythonInstalled and isPipInstalled:
 			print "> Start to deploy app from: " + source
-			#executeAndOutput(sshConnection, commands)
-			deployApp(sshConnection,source)
+			executeAndOutput(sshConnection, commands)
+			#deployApp(sshConnection,source)
+			#generateDockerfile(sshConnection, source)
 			closeSshConnection(sshConnection)
 		elif not isPythonInstalled:
 			print WARNING_PYTHON_NOT_INSTALLED
