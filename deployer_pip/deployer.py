@@ -2,13 +2,17 @@ import paramiko
 import argparse
 
 # print "> deployer start"
+# commands = 'cd ~/Programming/DjangoTest/test/\nls'
 default_hostname = '192.168.2.181'
 default_port = '22'
 default_ip = default_hostname + ":" + default_port
-default_source = 'https://github.com/abc/abc.git' 
-# default_source = 'https://github.com/django-extensions/django-extensions.git'
-default_username = 'pi'
-default_password = 'raspberry'
+# default_source = 'https://github.com/abc/abc.git' 
+default_source = 'https://github.com/django-extensions/django-extensions.git'
+try:
+	from account_setting import *
+except ImportError:
+	default_username = 'aaa'
+	default_password = 'aaa'
 
 COMMAND_NOT_FOUND = 'command not found'
 WARNING_PIP_NOT_INSTALLED = 'Error: command "pip" does not exist on target system. Abort. '
@@ -32,6 +36,8 @@ def closeSshConnection(s):
 	s.close()
 
 def executeAndOutput(ssh, command):
+	# if len(command.strip()) > 0:
+	# print "$ " + command.strip()
 	stdin, stdout, stderr = ssh.exec_command(command)
 	printOutput(stdout, "stdout")
 	printOutput(stderr, "stderr")
@@ -39,7 +45,9 @@ def executeAndOutput(ssh, command):
 def printOutput(source, name):
 	outputString = source.read().strip()
 	if len(outputString) > 0:
+		# print "- " + name
 		print outputString
+		# print "- end of " + name
 
 def isCommandInstalled(ssh, command):
 	stdin, stdout, stderr = ssh.exec_command(command)
@@ -50,12 +58,21 @@ def isCommandInstalled(ssh, command):
 	else:
 		return True
 
+def readCommandFromFile(fileloc):
+	try:
+		f = open(fileloc)
+		return f.readlines()
+	except:
+		print WARNING_COMMAND_FILE_NOT_EXISTS
+		return None
+
+
 if __name__ == "__main__":
-	parser = argparse.ArgumentParser(description='deployer.py: Input target machine ip and package git source to deploy app. ex: "python deployer.py --ip 192.168.2.181:22 --source https://github.com/django-extensions/django-extensions.git --username YOUR_USERNAME --password YOUR_PASSWORD". Or just "python deployer.py" using default values.')
-	parser.add_argument("--ip", help='Default value: ' + default_ip, default=default_ip)
-	parser.add_argument("--source", help='Default value: ' + default_source, default=default_source)
-	parser.add_argument("--username", help='Your username in target machine. Default value: ' + default_username, default=default_username)
-	parser.add_argument("--password", help='Your password of specified username. Default value: ' + default_password, default=default_password)
+	parser = argparse.ArgumentParser(description='deployer.py: Input target machine ip and package git source to deploy app. ex: python deployer.py 123.4.5.6:123 https://github.com/abc/abc.git')
+	parser.add_argument("--ip", help='ex: 123.4.5.6:123', default=default_ip)
+	parser.add_argument("--source", help='ex: https://github.com/abc/abc.git', default=default_source)
+	parser.add_argument("--username", help='username', default=default_username)
+	parser.add_argument("--password", help='password', default=default_password)
 	args = parser.parse_args()
 	hostname = args.ip.split(":")[0]
 	try:
@@ -65,22 +82,12 @@ if __name__ == "__main__":
 	source = args.source
 	username = args.username
 	password = args.password
-
 	print "> Connect to " + username + ":" + password + "@" + hostname + ":" + str(port)
-	# commands = 'source ~/Programming/virtualenv/env1/bin/activate\nyes | pip install git+' + source
 	commands = 'yes | sudo pip install git+' + source
-	# print commands
 	sshConnection = startSshConnection()
 	if sshConnection is not None:
-		isPythonInstalled = isCommandInstalled(sshConnection, 'python --version')
-		isPipInstalled = isCommandInstalled(sshConnection, 'pip --version')
-		if isPythonInstalled and isPipInstalled:
-			print "> Start to deploy app from: " + source
-			executeAndOutput(sshConnection, commands)
-			closeSshConnection(sshConnection)
-		elif not isPythonInstalled:
-			print WARNING_PYTHON_NOT_INSTALLED
-		else:
-			print WARNING_PIP_NOT_INSTALLED
+		print "> Start to deploy app from: " + source
+		executeAndOutput(sshConnection, commands)
+		closeSshConnection(sshConnection)
 
 # print "> deployer end"
