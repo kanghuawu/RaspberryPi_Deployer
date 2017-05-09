@@ -127,22 +127,22 @@ def doNothing():
 	print "> do nothing..."
 
 def doDockerBuildAndStart():
-    commands = 'docker build -t ' + source + ' .'
+	commands = 'docker build -t ' + source + ' .'
 	print "> Build docker image..."
-    executeAndOutput(sshConnection, commands)
+	executeAndOutput(sshConnection, commands)
 	print "> Start docker service..."
-    commands = 'docker run -d -p 5000:5000 ' + source
-    executeAndOutput(sshConnection, commands)
+	commands = 'docker run -d -p 5000:5000 ' + source
+	executeAndOutput(sshConnection, commands)
 
 def doDockerStop():
-    commands = 'docker stop ' + source
+	commands = 'docker stop ' + source
 	print "> Stop docker service..."
-    executeAndOutput(sshConnection, commands)
+	executeAndOutput(sshConnection, commands)
 
 def doDockerDelete():
-    commands = 'docker rm ' + source
+	commands = 'docker rm ' + source
 	print "> Delete docker image..."
-    executeAndOutput(sshConnection, commands)
+	executeAndOutput(sshConnection, commands)
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='deployer.py: Input target machine ip and package git source to deploy app. ex: "python deployer.py --action deploy --source https://github.com/Nefeldaiel/hello-flask --ip 192.168.2.181:22 --username YOUR_USERNAME --password YOUR_PASSWORD". Or just "python deployer.py" using default values.')
