@@ -3,7 +3,7 @@ import argparse
 
 # print "> deployer start"
 # commands = 'cd ~/Programming/DjangoTest/test/\nls'
-default_hostname = '192.168.2.181'
+default_hostname = '192.168.2.2'
 default_port = '22'
 default_ip = default_hostname + ":" + default_port
 # default_source = 'https://github.com/abc/abc.git' 
@@ -11,8 +11,8 @@ default_source = 'https://github.com/django-extensions/django-extensions.git'
 try:
 	from account_setting import *
 except ImportError:
-	default_username = 'aaa'
-	default_password = 'aaa'
+	default_username = 'pi'
+	default_password = 'raspberry'
 
 COMMAND_NOT_FOUND = 'command not found'
 WARNING_PIP_NOT_INSTALLED = 'Error: command "pip" does not exist on target system. Abort. '
