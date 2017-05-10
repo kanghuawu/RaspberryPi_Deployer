@@ -2,14 +2,15 @@ import paramiko
 import argparse
 
 print "> deployer start"
-baseFolder = '/home/ryan/Dropbox/273/project'
+baseFolder = '/home/ryan/Dropbox/273/project/docker_test'
 default_hostname = '192.168.2.181'
 default_port = '22'
 default_ip = default_hostname + ":" + default_port
 ACTION_DEPLOY = 'deploy'
 ACTION_REDEPLOY = 'redeploy'
 ACTION_STOP = 'stop'
-default_source = 'https://github.com/nefeldaiel/hello-flask'
+#default_source = 'https://github.com/nefeldaiel/hello-flask'
+default_source = 'https://github.com/cimomo/hello-flask'
 default_action = ACTION_DEPLOY
 default_username = 'aaa'
 default_password = 'aaa'
@@ -126,25 +127,26 @@ def doNothing():
 	print "> do nothing..."
 
 def doDockerBuildAndStart():
-	commands = 'docker build -t ' + source + ' .'
+	commands = 'docker build -t' + appName + ':latest ' + baseFolder + '/' + appName
 	print "> Build docker image..."
+	print appName
 	executeAndOutput(sshConnection, commands)
 	print "> Start docker service..."
-	commands = 'docker run -d -p 5000:5000 ' + source
+	commands = 'docker run -d -p 5000:5000 ' + appName
 	executeAndOutput(sshConnection, commands)
 
 def doDockerStop():
-	commands = 'docker stop ' + source
+	commands = 'docker stop $(docker ps -a -q  --filter ancestor=' + appName + ')'
 	print "> Stop docker service..."
 	executeAndOutput(sshConnection, commands)
 
 def doDockerDelete():
-	commands = 'docker rm ' + source
+	commands = 'docker rm $(docker ps -a -q --filter ancestor=' + appName + ')'
 	print "> Delete docker image..."
 	executeAndOutput(sshConnection, commands)
 
 if __name__ == "__main__":
-	parser = argparse.ArgumentParser(description='deployer.py: Input target machine ip and package git source to deploy app. ex: "python deployer.py --action deploy --source https://github.com/Nefeldaiel/hello-flask --ip 192.168.2.181:22 --username YOUR_USERNAME --password YOUR_PASSWORD". Or just "python deployer.py" using default values.')
+	parser = argparse.ArgumentParser(description='deployer.py: Input target machine ip and package git source to deploy app. ex: "python deployer.py --action deploy --source https://github.com/nefeldaiel/hello-flask --ip 192.168.2.181:22 --username YOUR_USERNAME --password YOUR_PASSWORD". Or just "python deployer.py" using default values.')
 	parser.add_argument("--ip", help='Default value: ' + default_ip, default=default_ip)
 	parser.add_argument("--source", help='Default value: ' + default_source, default=default_source)
 	parser.add_argument("--username", help='Your username in target machine. Default value: ' + default_username, default=default_username)
