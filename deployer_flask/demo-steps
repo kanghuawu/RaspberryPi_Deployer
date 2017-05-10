@@ -1,0 +1,41 @@
+deployer:
+
+* pip install
+* docker
+* debug mode
+* production mode
+
+
+# Pip install
+
+1. Deploy
+
+python deployer.py --ip 192.168.2.2:22 --source https://github.com/nqngo22/helloworld273
+
+# flask deploy (production)
+
+1. Deploy
+python deployer-flask.py --source https://github.com/kanghuawu/my-test-repo --ip 192.168.2.2:22 --action deploy 
+
+2. Stop
+python deployer-flask.py --source https://github.com/kanghuawu/my-test-repo --ip 192.168.2.2:22 --action stop 
+
+# flask deploy (debug mode)
+
+1. Deploy
+python deployer-flask-v2.py --source https://github.com/kanghuawu/my-test-repo --ip 192.168.2.2:22 --action deploy 
+
+2. Demo original website
+
+3. Change app.py
+
+4. git add .
+   git commit -m "change"
+   git push origin
+
+5. Re-deploy
+python deployer-flask-v2.py --source https://github.com/kanghuawu/my-test-repo --ip 192.168.2.2:22 --action deploy
+
+6. Stop and delete
+python deployer-flask-v2.py --source https://github.com/kanghuawu/my-test-repo --ip 192.168.2.2:22 --action delete
+
