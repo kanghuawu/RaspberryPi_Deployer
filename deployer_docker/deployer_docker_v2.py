@@ -2,15 +2,14 @@ import paramiko
 import argparse
 
 print "> deployer start"
-baseFolder = '~/Programming/deployer'
+baseFolder = '/home/ryan/Dropbox/273/project'
 default_hostname = '192.168.2.181'
 default_port = '22'
 default_ip = default_hostname + ":" + default_port
 ACTION_DEPLOY = 'deploy'
 ACTION_REDEPLOY = 'redeploy'
 ACTION_STOP = 'stop'
-# default_source = 'https://github.com/kanghuawu/cmpe273-spring17/tree/master/assignment1/hello-flask'
-default_source = 'https://github.com/Nefeldaiel/hello-flask'
+default_source = 'https://github.com/nefeldaiel/hello-flask'
 default_action = ACTION_DEPLOY
 default_username = 'aaa'
 default_password = 'aaa'
@@ -30,7 +29,7 @@ def startSshConnection():
 	s.load_system_host_keys()
 	s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 	try:
-		s.connect(hostname, port, username, password)
+		s.connect(hostname, int(port), username, password)
 	except paramiko.ssh_exception.AuthenticationException:
 		exitOnError(WARNING_AUTHENTICATE_FAILURE)
 		return None
