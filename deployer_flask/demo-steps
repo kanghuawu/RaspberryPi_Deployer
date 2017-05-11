@@ -12,13 +12,11 @@ deployer:
 
 python deployer.py --ip 192.168.2.2:22 --source https://github.com/nqngo22/helloworld273
 
-# flask deploy (production)
+python
 
-1. Deploy
-python deployer-flask.py --source https://github.com/kanghuawu/my-test-repo --ip 192.168.2.2:22 --action deploy 
+from helloworld273 import helloworld273
 
-2. Stop
-python deployer-flask.py --source https://github.com/kanghuawu/my-test-repo --ip 192.168.2.2:22 --action stop 
+helloworld273.helloworld()
 
 # flask deploy (debug mode)
 
@@ -26,6 +24,14 @@ python deployer-flask.py --source https://github.com/kanghuawu/my-test-repo --ip
 python deployer-flask-v2.py --source https://github.com/kanghuawu/my-test-repo --ip 192.168.2.2:22 --action deploy 
 
 2. Demo original website
+
+# flask deploy (production)
+
+1. Deploy
+python deployer-flask.py --source https://github.com/kanghuawu/my-test-repo --ip 192.168.2.2:22 --action deploy 
+
+2. Stop
+python deployer-flask.py --source https://github.com/kanghuawu/my-test-repo --ip 192.168.2.2:22 --action stop 
 
 3. Change app.py
 
