@@ -111,6 +111,8 @@ $ sudo ln -s /etc/uwsgi/apps-available/mysite.ini /etc/uwsgi/apps-enabled/mysite
 
 
 File 1
+
+```sh
 server {
     listen 80;
     server_tokens off;
@@ -119,15 +121,18 @@ server {
          uwsgi_pass unix:/tmp/mysite.sock;
      }
 }
+```
 
 File 2
 [uwsgi]
+
+```sh
 vhost = true
 socket = /tmp/mysite.sock
 chdir = /home/pi/hello-flask
 module = app
 callable = app
-
+```
 
 
 ```sh
